@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>搜索结果</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>搜索结果</h1>
+            <p>您搜索的关键词: <strong>{{ keyword }}</strong></p>
+        </header>
+
+        <main>
+            {% if error %}
+                <div class="error">{{ error }}</div>
+            {% elif results %}
+                <h2>找到 {{ results|length }} 条结果:</h2>
+                <ul>
+                    {% for result in results %}
+                        <li>
+                            <h3>
+                                {% if result.file_type == 'pdf' %}
+                                    <a href="{{ url_for('serve_pdf', filename=result.file_name) }}" target="_blank">{{ result.title }}</a>
+                                {% else %}
+                                    <a href="{{ url_for('article_detail', article_id=result.id) }}">{{ result.title }}</a>
+                                {% endif %}
+                            </h3>
+                            <p class="info">
+                                发文单位: {{ result.author if result.author else '未知单位' }} |
+                                施行时间: {{ result.effective_date if result.effective_date else '未知时间' }}
+                            </p>
+                            {% if result.file_type == 'pdf' %}
+                                <iframe src="{{ url_for('serve_pdf', filename=result.file_name) }}" width="100%" height="300px" style="border: none;"></iframe>
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>没有找到相关内容。</p>
+            {% endif %}
+        </main>
+
+        <footer>
+            <a href="{{ url_for('index') }}" class="action-button">返回首页</a>
+        </footer>
+    </div>
+
+    <style>
+        /* 样式可以根据需要进行调整 */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        .error {
+            color: #dc3545;
+            background-color: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        h3 {
+            margin: 0;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        footer {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .action-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+
+        /* 限制段落文字为一行 */
+        .info {
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 1; /* 限制为一行 */
+            overflow: hidden;
+            text-overflow: ellipsis; /* 超出部分用省略号表示 */
+            margin-top: 5px; /* 添加顶部间距 */
+            text-align: left; /* 设置对齐方式为左对齐 */
+        }
+    </style>
+</body>
+</html>

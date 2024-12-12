@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查看 PDF - {{ filename }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- 假设您有一个自定义样式表 -->
+</head>
+<body>
+    <div class="pdf-container">
+        <h1>查看 PDF 文件</h1>
+        <iframe src="{{ url_for('serve_pdf', filename=filename) }}" width="100%" height="600px" style="border: none;"></iframe>
+        <br>
+        <a href="{{ url_for('search') }}" class="action-button back-button">
+            <i class="fas fa-arrow-left"></i> 返回搜索结果
+        </a>
+    </div>
+
+    <style>
+        /* PDF 容器 */
+        .pdf-container {
+            max-width: 800px;
+            margin: 20px auto; /* 减少顶部留白 */
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            text-align: center; /* 中心对齐 */
+        }
+
+        /* 按钮样式 */
+        .action-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 20px 0;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: white;
+            background-color: #007bff; /* 默认按钮颜色 */
+        }
+
+        .action-button:hover {
+            background-color: #0056b3; /* 悬停时的颜色 */
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .pdf-container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .action-button {
+                width: 100%;
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+    </style>
+</body>
+</html>

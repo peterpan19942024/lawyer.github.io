@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ article.title }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}"> <!-- 假设您有一个自定义样式表 -->
+</head>
+<body>
+    <div class="article-container">
+        <div class="article-header">
+            <h1 class="article-title">{{ article.title }}</h1>
+            <div class="article-meta">
+                <span><i class="fas fa-building"></i> 发文单位：{{ article.author if article.author else '未知单位' }}</span>
+                <span><i class="fas fa-calendar-alt"></i> 施行时间：{{ article.effective_date if article.effective_date else '未知时间' }}</span>
+            </div>
+        </div>
+
+        <div class="article-content">
+            {% if article.file_type == 'pdf' %}
+                <iframe src="{{ url_for('serve_pdf', filename=article.file_name) }}" width="100%" height="600px" style="border: none;"></iframe>
+            {% else %}
+                {% for paragraph in article.content.split('\n') %}
+                    <p>{{ paragraph }}</p>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="article-footer">
+            <a href="{{ url_for('index') }}" class="action-button home-button">
+                <i class="fas fa-home"></i> 返回首页
+            </a>
+            {% if request.args.get('from_keyword') %}
+            <a href="{{ url_for('search', keyword=request.args.get('from_keyword', '')) }}" class="action-button back-button">
+                <i class="fas fa-arrow-left"></i> 返回搜索结果
+            </a>
+            {% endif %}
+            <a href="{{ url_for('download_article', article_id=article.id) }}" class="action-button download-button">
+                <i class="fas fa-download"></i> 下载文档
+            </a>
+        </div>
+    </div>
+
+    <style>
+        /* 文章容器 */
+        .article-container {
+            max-width: 800px;
+            margin: 20px auto; /* 减少顶部留白 */
+            padding: 40px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 文章标题区域 */
+        .article-header {
+            margin-bottom: 20px; /* 减少标题与元信息之间的间距 */
+            text-align: center;
+        }
+
+        .article-title {
+            color: #2c3e50;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px; /* 调整标题与元信息之间的间距 */
+            line-height: 1.4;
+        }
+
+        /* 文章元信息 */
+        .article-meta {
+            color: #666;
+            font-size: 15px;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .article-meta span {
+            margin: 0 15px;
+            display: inline-block;
+        }
+
+        .article-meta i {
+            margin-right: 5px;
+            color: #007bff;
+        }
+
+        /* 文章内容 */
+        .article-content {
+            color: #2c3e50;
+            line-height: 1.8;
+            font-size: 16px;
+            margin-bottom: 40px;
+        }
+
+        /* 段落样式 */
+        .article-content p {
+            margin: 1em 0; /* 每段前后空一行 */
+            text-indent: 2em; /* 每个段落空两格 */
+            text-align: left; /* 左对齐 */
+        }
+
+        /* 文章底部 */
+        .article-footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #eee;
+            text-align: center;
+        }
+
+        /* 按钮样式 */
+        .action-button {
+            display: inline-block;
+            padding: 12px 24px;
+            margin: 0 10px;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            color: white;
+        }
+
+        .home-button {
+            background-color: #6c757d;
+        }
+
+        .home-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .back-button {
+            background-color: #007bff;
+        }
+
+        .back-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+        }
+
+        .download-button {
+            background-color: #28a745;
+        }
+
+        .download-button:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        /* 引用样式 */
+        .article-content blockquote {
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-left: 4px solid #007bff;
+            color: #495057;
+        }
+
+        /* 强调文本 */
+        .article-content strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* 链接样式 */
+        .article-content a {
+            color: #007bff;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .article-content a:hover {
+            border-bottom-color: #007bff;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .article-container {
+                margin: 10px;
+                padding: 15px;
+            }
+
+            .article-title {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+
+            .article-meta {
+                font-size: 13px;
+                margin-bottom: 20px;
+            }
+
+            .article-meta span {
+                display: block;
+                margin: 5px 0;
+            }
+
+            .article-content {
+                font-size: 14px;
+            }
+
+            .action-button {
+                display: block;
+                width: 100%;
+                margin: 10px 0;
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .article-container {
+                margin: 5px;
+                padding: 10px;
+            }
+
+            .article-title {
+                font-size: 18px;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .article-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 20px;
+            }
+
+            .article-footer {
+                display: none;
+            }
+        }
+    </style>
+</body>
+</html>
