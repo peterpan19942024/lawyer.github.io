@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文档搜索系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        .container {
+            width: 80%; /* 使容器在小屏幕上自适应 */
+            max-width: 600px; /* 设置最大宽度 */
+            margin: auto;
+            overflow: hidden;
+        }
+        header {
+            background: #35424a;
+            color: #ffffff;
+            padding: 20px 0;
+            text-align: center;
+            margin-top: 50px; /* 增加上边距 */
+        }
+        .search-container {
+            margin: 20px auto; /* 确保容器居中 */
+            padding: 20px;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .search-type {
+            margin-bottom: 10px;
+            text-align: left; /* 使单选框左对齐 */
+        }
+        .search-input-group {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start; /* 居中对齐 */
+        }
+        .search-input-group input[type="text"] {
+            flex: 1; /* 使输入框自适应宽度 */
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .search-btn {
+            padding: 10px 20px;
+            background: #35424a;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .search-btn:hover {
+            background: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>文档搜索系统</h1>
+        </header>
+        <main>
+            <div class="search-container">
+                <form action="{{ url_for('search') }}" method="get" class="search-form">
+                    <div class="search-type">
+                        <label>
+                            <input type="radio" name="type" value="案例" checked> 案例
+                        </label>
+                        <label>
+                            <input type="radio" name="type" value="法规"> 法规
+                        </label>
+                        <label>
+                            <input type="radio" name="type" value="商业观察"> 商业观察
+                        </label>
+                        <label>
+                            <input type="radio" name="type" value="心理观察"> 心理观察
+                        </label>
+                    </div>
+                    <div class="search-input-group">
+                        <input type="text" name="keyword" required placeholder="请输入搜索关键词...">
+                        <button type="submit" class="search-btn">
+                            <span class="search-btn-text">搜索</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </main>
+    </div>
+</body>
+</html>
